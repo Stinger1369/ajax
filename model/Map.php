@@ -1,4 +1,9 @@
 <?php
+require __DIR__ . '/../vendor/autoload.php';
+// Chargement du fichier .env
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
 class Map
 {
   private $latitude;
@@ -8,7 +13,7 @@ class Map
   public function __construct($villeId, $villeName)
   {
     $this->ville = $villeName;
-    $apiKey = getenv('API_KEY');
+    $apiKey = $_ENV['API_KEY'];
     $url = 'https://api.opencagedata.com/geocode/v1/json?q=' . urlencode($this->ville) . '&key=' . $apiKey;
     $json = file_get_contents($url);
     $data = json_decode($json, true);

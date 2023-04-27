@@ -4,6 +4,7 @@ session_start();
 include '../config/Database.php';
 include '../Model/Region.php';
 include '../Model/Ville.php';
+include '../Model/Map.php';
 
 $connexion = new Database;
 $maBase = $connexion->connexion();
@@ -21,7 +22,8 @@ $maBase = $connexion->connexion();
   <title>Exemple de sélection de région, département et ville</title>
   <link href="../assets/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css">
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
 
   <style>
     .bd-placeholder-img {
@@ -95,10 +97,21 @@ $maBase = $connexion->connexion();
     <div class="form-label-group text-center">
       <?php if (isset($_POST['ville'])) { ?>
         <div class="alert alert-primary" role="alert">
-          <?php Ville::GetVilleByIdDepartement($_POST['ville']); ?>
+          <?php
+          $selectedVille = Ville::GetVilleById($_POST['ville']);
+          if ($selectedVille !== null) {
+            echo $selectedVille->getNomVille();
+          ?>
         </div>
-      <?php }; ?>
+    <?php
+            $villeId = $_POST['ville'];
+            $villeName = $selectedVille->getNomVille();
+            $map = new Map($villeId, $villeName);
+            echo $map->getMapHTML();
+          }
+        }; ?>
     </div>
+
     <p class="mt-5 mb-3 text-muted text-center">&copy; Afpa Roubaix 2016-2019</p>
   </form>
 </body>

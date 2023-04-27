@@ -121,6 +121,7 @@ class Ville
     $results = $maBase->prepare($query);
     $results->execute();
     //var_dump($results->fetchAll(PDO::FETCH_ASSOC));
+
 ?>
 
     <option value disabled selected>Sélectionnez une ville</option>
@@ -130,6 +131,29 @@ class Ville
     ?>
       <option value="<?php echo $ville["id_ville"]; ?>"><?php echo $ville["nom_ville"]; ?></option>
 <?php
+    }
+  }
+
+  public static function GetVilleById($villeId)
+  {
+    $connexion = new Database;
+    $maBase = $connexion->connexion();
+
+    $query = "SELECT * FROM ville WHERE id_ville = ?";
+    $stmt = $maBase->prepare($query);
+    $stmt->execute([$villeId]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($result) {
+      return new Ville(
+        $result['id_ville'],
+        $result['nom_ville'],
+        $result['code_insee'],
+        $result['code_postal'],
+        $result['id_departement']
+      );
+    } else {
+      return null;
     }
   }
 }
